@@ -1,5 +1,5 @@
 # params.py
-from_email = "azohchelsie@gmail.com"
+from_email = "" #use your real email here
 # Use Gmail App Password (16 characters, no spaces)
-app_password = "pfmimyusjlfrbhgo"   # ← your real one here
+app_password = ""   # ← your real app password
 #tisp ptuh ljqj pmqt 
