@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/otp.css') }}">
+</head>
+<body>
+    <!-- Decorative shapes -->
+    <div class="shape shape-circle-1"></div>
+    <div class="shape shape-circle-2"></div>
+    <div class="shape shape-blob"></div>
+
+    <!-- Login container -->
+    <div class="login-wrapper">
+        <!-- Left Card - Branding -->
+        <div class="branding-card">
+            <div class="branding-content">
+                <!-- Logo placeholder -->
+                <div class="logo-placeholder">
+                    <img src="{{ url_for('static', filename='images/white_cloud.png') }} " alt="Prime Cloud Logo" class="logo">
+
+                    <h2>Prime Cloud</h2>
+                </div>
+
+                <p>Your cloud storage solution</p>
+                
+               <!--  <a class="btn-register">Create Account</a> --> 
+            </div>
+        </div>
+
+        <!-- Right Card - LOGIN FORM (this gets replaced with OTP) -->
+        <div id="loginCard" class="login-card">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to your account</p>
+            </div>
+
+            <div id="messageBox" style="display:none; padding:12px 15px; margin-bottom:20px; border-radius:8px; font-size:14px;"></div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+            Don't have an account? 
+          </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>
