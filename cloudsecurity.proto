@@ -1,0 +1,64 @@
+// cloudsecurity.proto
+syntax = "proto3";
+
+package cloud;
+
+service UserService {
+  rpc login (Request) returns (Response);
+  rpc verifyOtp (Request) returns (Response);
+  rpc register (RegisterRequest) returns (Response);
+
+  // NEW FILE OPERATIONS
+  rpc upload (UploadRequest) returns (Response);
+  rpc listFiles (UserRequest) returns (FileList);
+  rpc download (DownloadRequest) returns (DownloadResponse);
+  rpc deleteFile(DeleteRequest) returns (Response);
+}
+
+message Request {
+  string login = 1;
+  string password = 2;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message Response {
+  string result = 1;
+}
+
+// NEW MESSAGES
+message UploadRequest {
+  string username = 1;
+  string filename = 2;
+  bytes data = 3;
+}
+
+message UserRequest {
+  string username = 1;
+}
+
+message FileList {
+  repeated string filenames = 1;
+  repeated int64 sizes = 2;
+}
+
+message DownloadRequest {
+  string username = 1;
+  string filename = 2;
+}
+
+message DownloadResponse {
+  bool success = 1;
+  string result = 2;
+  bytes data = 3;
+}
+
+message DeleteRequest {          // ← NEW
+  string username = 1;
+  string filename = 2;
+}
+
