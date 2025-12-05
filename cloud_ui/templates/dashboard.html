@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prime Cloud</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- LEFT SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='images/purple_cloud.png') }} " alt="Prime Cloud Logo" class="logo">
+
+                <h2>Prime Cloud</h2>
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a href="#" class="menu-item active">
+                 <img src="{{ url_for('static', filename='images/weirdasscloud.png') }}" alt="My Cloud" class="menu-icon">
+                 <span class="menu-text">My Cloud</span>
+                 </a>
+
+                <a href="#" class="menu-item ">
+                 <img src="{{ url_for('static', filename='images/favorites.png') }}" alt="My Cloud" class="menu-icon">
+                 <span class="menu-text">Favorites</span>
+                 </a>
+
+
+                <a href="#" class="menu-item ">
+                 <img src="{{ url_for('static', filename='images/files.png') }}" alt="My Cloud" class="menu-icon">
+                 <span class="menu-text">All files</span>
+                 </a>
+
+                <a href="#" class="menu-item ">
+                 <img src="{{ url_for('static', filename='images/trash.png') }}" alt="My Cloud" class="menu-icon">
+                 <span class="menu-text">Trash bin</span>
+                 </a>
+
+                 
+                  
+                <a href="#" class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text">Settings</span>
+                </a>
+
+
+            </nav>
+
+         
+            <div class="sidebar-footer">
+                <!--<a href="/logout" class="logout-btn">Logout</a> -->
+
+                <a href="/logout" class="menu-item ">
+                 <img src="{{ url_for('static', filename='images/logout.png') }}" alt="My Cloud" class="menu-icon">
+                 <span class="menu-text">Logout</span>
+                 </a>
+
+
+
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-content">
+            <div class="content-header">
+
+                <div class="header-info">
+                    <h1>My Cloud</h1>
+                    <p class="welcome-text">Welcome, <strong id="username">{{ username }}</strong>! </p>
+                </div>
+
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search files...">
+
+                    <img src="{{ url_for('static', filename='images/search.png') }} " alt="Prime Cloud Logo" class="search-btn">
+
+                 
+                </div>
+                
+            </div>
+
+            <!-- FILE CATEGORIES -->
+            <div class="file-categories">
+
+                
+                
+                <div class="category-item active " data-category="all">
+                <img src="{{ url_for('static', filename='images/files.png') }}" alt="All Files" class="category-icon">
+                <span class="category-name">All Files</span>
+                </div>
+
+                <div class="category-item " data-category="documents">
+                <img src="{{ url_for('static', filename='images/documents.png') }}" alt="All Files" class="category-icon">
+                <span class="category-name">Documents</span>
+                </div>
+
+                
+                <div class="category-item " data-category="images">
+                <img src="{{ url_for('static', filename='images/images.png') }}" alt="images" class="category-icon">
+                <span class="category-name">Images</span>
+                </div>
+
+                <div class="category-item " data-category="videos">
+                <img src="{{ url_for('static', filename='images/movies.png') }}" alt="videos" class="category-icon">
+                <span class="category-name">Videos</span>
+                </div>
+
+
+
+            </div>
+
+            <!-- UPLOAD SECTION -->
+            <div class="upload-section">
+                <label for="fileInput" class="upload-btn">
+                    Upload File
+                </label>
+                <input type="file" id="fileInput" style="display:none;">
+                
+                <div id="uploadProgress" class="upload-progress" style="display:none;">
+                    <div class="progress-info">
+                        <span id="uploadFileName">Uploading...</span>
+                        <span id="uploadPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILES LIST -->
+            <div class="files-container">
+                <div id="filesList" class="files-list">
+                    <div class="empty-state">
+                        <p>No files yet. Start by uploading a file!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR - STORAGE BREAKDOWN -->
+        <div class="right-sidebar">
+            <h3>Storage Breakdown</h3>
+            <div class="storage-breakdown">
+
+                <div class="storage-indicator">
+                <div class="storage-circle">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="storage-bg"></circle>
+                        <circle cx="50" cy="50" r="45" class="storage-used"></circle>
+                    </svg>
+                    <div class="storage-text">
+                        <span class="storage-used-text" id="usedGB">0</span><span id="usedUnit">GB</span>
+                        <span class="storage-label">/ 5 GB</span> 
+                    </div>
+                </div>
+                <div class="storage-details">
+                    <div class="storage-item">
+                        <span class="storage-dot used"></span>
+                        <span id="usedText">0 GB Used</span>
+                    </div>
+                    <div class="storage-item">
+                        <span class="storage-dot free"></span>
+                        <span id="freeText">5 GB Free</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="breakdown-item">
+              <div class="breakdown-label">
+              <img src="{{ url_for('static', filename='images/documents.png') }}" alt="Documents" class="breakdown-icon">
+              <span>Documents</span>
+
+              <span class="breakdown-size" id="docsSize">0 MB</span>
+             </div>
+               
+               <div class="breakdown-bar">
+                <div class="breakdown-fill docs"></div>
+               </div>
+               </div>
+
+
+            <div class="breakdown-item">
+              <div class="breakdown-label">
+              <img src="{{ url_for('static', filename='images/images.png') }}" alt="images" class="breakdown-icon">
+              <span>Images         . .</span>
+ 
+              <span class="breakdown-size" id="imagesSize">0 MB</span>
+             </div>
+               
+               <div class="breakdown-bar">
+                <div class="breakdown-fill images"></div>
+               </div>
+               </div>
+
+
+
+             <div class="breakdown-item">
+              <div class="breakdown-label">
+              <img src="{{ url_for('static', filename='images/movies.png') }}" alt="movies" class="breakdown-icon">
+              <span>Videos   , .</span>
+
+              <span class="breakdown-size" id="videosSize">0 MB</span>
+             </div>
+               
+               <div class="breakdown-bar">
+                <div class="breakdown-fill videos"></div>
+               </div>
+               </div>
+
+
+
+            <div class="breakdown-item">
+              <div class="breakdown-label">
+              <img src="{{ url_for('static', filename='images/files.png') }}" alt="others" class="breakdown-icon">
+              <span>Others  , .</span>
+
+              <span class="breakdown-size" id="otherSize">0 MB</span>
+             </div>
+               
+               <div class="breakdown-bar">
+                <div class="breakdown-fill other"></div>
+               </div>
+               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+              
+
+
+
+
+                
+               
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlert" class="custom-alert-overlay" style="display:none;">
+        <div class="custom-alert-box">
+            <p id="alertMessage"></p>
+            <button onclick="closeAlert()" class="alert-btn">OK</button>
+        </div>
+    </div>
+
+    <style>
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .custom-alert-box {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ddd;
+        }
+
+        .custom-alert-box p {
+            margin: 0 0 20px 0;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .alert-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .alert-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
