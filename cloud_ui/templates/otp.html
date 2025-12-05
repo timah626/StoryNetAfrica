@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+
+    <!-- Optional: Bootstrap if your OTP uses it -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Your OTP CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/otp.css') }}">
+</head>
+<body>
+
+<div class="otp-container">
+    <div class="otp-icon">✓</div>
+    <h2>OTP Sent</h2>
+    <p>Check your email for the verification code</p>
+    
+    <div id="messageBox" style="display:none; padding:12px 15px; margin-bottom:20px; border-radius:8px; font-size:14px; text-align:center;"></div>
+    
+    <div class="otp-input-group">
+        <input type="text" class="otp-input" id="otpInput" placeholder="Enter OTP" maxlength="6" inputmode="numeric">
+        <button type="button" class="btn-verify" id="verifyBtn" onclick="handleVerifyOTP()">Verify</button>
+    </div>
+    <p class="resend-text">Didn't receive? <a href="#" class="resend-link" id="resendLink" onclick="handleResend(event)">Resend OTP</a></p>
+    <button type="button" class="btn-back" onclick="handleBack()">Back to Login</button>
+</div>
+
+
+
+
+<script>
+    let resendTimer = 0;
+
+    // Only allow numbers in OTP input
+    document.getElementById('otpInput').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+    });
+
+    // Auto-submit when 6 digits entered
+    document.getElementById('otpInput').addEventListener('input', function() {
+        if (this.value.length === 6) {
+            handleVerifyOTP();
+        }
+    });
+
+    async function handleVerifyOTP() {
+        const otp = document.getElementById('otpInput').value.trim();
+        const verifyBtn = document.getElementById('verifyBtn');
+        
+        if (!otp || otp.length !== 6) {
+            showMessage('Please enter a 6-digit OTP', 'error');
+            return;
+        }
+        
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Verifying...';
+        
+        try {
+            const response = await fetch('/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    otp: otp
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                showMessage('Login successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1500);
+            } else {
+                showMessage(data.error || 'Invalid OTP', 'error');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'Verify';
+            }
+        } catch (error) {
+            showMessage('Network error: ' + error.message, 'error');
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'Verify';
+        }
+    }
+
+    async function handleResend(event) {
+        event.preventDefault();
+        
+        if (resendTimer > 0) {
+            showMessage(`Please wait ${resendTimer}s before resending`, 'error');
+            return;
+        }
+        
+        const resendLink = document.getElementById('resendLink');
+        resendLink.style.pointerEvents = 'none';
+        resendLink.style.opacity = '0.5';
+        
+        try {
+            const response = await fetch('/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                showMessage('OTP resent to your email', 'success');
+                startResendTimer();
+            } else {
+                showMessage(data.error || 'Failed to resend OTP', 'error');
+                resendLink.style.pointerEvents = 'auto';
+                resendLink.style.opacity = '1';
+            }
+        } catch (error) {
+            showMessage('Network error: ' + error.message, 'error');
+            resendLink.style.pointerEvents = 'auto';
+            resendLink.style.opacity = '1';
+        }
+    }
+
+    function startResendTimer() {
+        resendTimer = 60;
+        const resendLink = document.getElementById('resendLink');
+        
+        const interval = setInterval(() => {
+            resendTimer--;
+            resendLink.textContent = `Resend OTP (${resendTimer}s)`;
+            
+            if (resendTimer === 0) {
+                clearInterval(interval);
+                resendLink.textContent = 'Resend OTP';
+                resendLink.style.pointerEvents = 'auto';
+                resendLink.style.opacity = '1';
+            }
+        }, 1000);
+    }
+
+    function handleBack() {
+        if (confirm('Go back to login?')) {
+            window.location.href = '/login';
+        }
+    }
+
+    function showMessage(message, type) {
+        const messageBox = document.getElementById('messageBox');
+        messageBox.textContent = message;
+        messageBox.style.display = 'block';
+        
+        if (type === 'error') {
+            messageBox.style.background = '#fee';
+            messageBox.style.color = '#c33';
+            messageBox.style.border = '1px solid #fcc';
+        } else {
+            messageBox.style.background = '#efe';
+            messageBox.style.color = '#3c3';
+            messageBox.style.border = '1px solid #cfc';
+        }
+    }
+
+    // Focus on input when page loads
+    window.addEventListener('load', () => {
+        document.getElementById('otpInput').focus();
+    });
+</script>
+</body>
+</html>
+
